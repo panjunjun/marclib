@@ -12,7 +12,9 @@ src/mplib/IO/db/hive/connector.py
 src/mplib/IO/db/mysql/__init__.py
 src/mplib/IO/db/mysql/connector.py
 src/mplib/IO/db/postgresql/__init__.py
+src/mplib/IO/db/postgresql/connector.py
 src/mplib/IO/db/redis/__init__.py
+src/mplib/IO/db/redis/connector.py
 src/mplib/IO/file/__init__.py
 src/mplib/IO/file/texts.py
 src/mplib/IO/file/binary/__init__.py
@@ -20,14 +22,12 @@ src/mplib/IO/file/binary/pickle_helper.py
 src/mplib/common/__init__.py
 src/mplib/common/base_class.py
 src/mplib/common/decorators.py
-src/mplib/common/pickle_helper.py
 src/mplib/common/settings.py
 src/mplib/common/unicode_tools.py
 src/mplib/dnr/__init__.py
 src/mplib/dnr/api.py
 src/mplib/dnr/factory.py
 src/mplib/dnr/helper.py
-src/mplib/dnr/unit_test.py
 src/mplib/tag/__init__.py
 src/mplib/tag/api.py
 src/mplib/tag/factory.py
