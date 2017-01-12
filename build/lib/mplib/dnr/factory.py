@@ -1,8 +1,8 @@
 # coding: utf-8
 # __author__: u"John"
 from __future__ import division
-from mplib.common.base_class import AttributeDict
-from mplib.common.unicode_tools import to_unicode
+from mplib.common import AttributeDict
+from mplib.common import to_unicode
 from glob import glob
 from os import path
 import pandas as pd

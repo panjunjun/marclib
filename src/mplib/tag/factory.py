@@ -2,8 +2,7 @@
 # __author__: u"John"
 from mplib.common.mysql_helper import MPMySQL
 from mplib.common.settings import MYSQL_SETTINGS
-from mplib.common.base_class import AttributeDict
-from collections import OrderedDict
+from mplib.common import AttributeDict
 
 
 class Parser(object):

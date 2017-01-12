@@ -1,21 +1,39 @@
 # coding: utf-8
 # __author__: u"John"
+from __future__ import unicode_literals
+import chardet
 
 
-def decode(string, charset="utf8"):
+def smart_decode(string):
     """
     处理中文编码，根据要求返回unicode
     :param string:
-    :param charset:
     :return:
     """
-    try:
-        return string.decode(charset)
-    except UnicodeDecodeError:
+    if isinstance(string, int) or isinstance(string, long) or isinstance(string, float) or isinstance(string, unicode):
+        return string
+    elif isinstance(string, str):
+        try:
+            return string.decode("utf8")
+        except UnicodeDecodeError:
+            pass
+        try:
+            return string.decode("gbk")
+        except UnicodeDecodeError:
+            pass
+        try:
+            return string.decode("gb2312")
+        except UnicodeDecodeError:
+            pass
+        try:
+            return string.decode(chardet.detect(string).get("encoding"))
+        except UnicodeDecodeError:
+            return string
+    else:
         return string
 
 
-def encode(string, charset="utf8"):
+def smart_encode(string, charset="utf8"):
     """
     处理Unicode编码，根据需求返回str
     :param string:

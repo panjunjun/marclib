@@ -1,12 +1,13 @@
 # coding: utf-8
 # __author__: u"John"
+from __future__ import unicode_literals
 from setuptools import setup, find_packages
 
 
 setup(
-    name=u"mplib",
-    version=u"0.3.9",
-    packages=find_packages("src"),
-    package_dir={"": "src"},
+    name="mplib",
+    version="0.4.0",
+    packages=find_packages("src".encode("utf8")),
+    package_dir={"": "src".encode("utf8")},
     include_package_data=True,
 )

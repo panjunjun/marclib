@@ -1,5 +1,6 @@
 # coding: utf-8
 # __author__: u"John"
+from __future__ import unicode_literals
 from mplib.common.settings import MYSQL_SETTINGS
 import MySQLdb
 
@@ -19,7 +20,7 @@ class MPMySQL(object):
     def __init__(self, settings=MYSQL_SETTINGS):
         self.settings = settings
 
-    def query(self, sql, dict_cursor=False, fetchone=False):
+    def query(self, sql, dict_cursor=True, fetchone=False):
         conn = MySQLdb.connect(**self.settings)
         if dict_cursor:
             cursor = conn.cursor(MySQLdb.cursors.DictCursor)
@@ -28,9 +29,9 @@ class MPMySQL(object):
         cursor.execute(sql)
         try:
             if fetchone:
-                ret = cursor.fetchone()
+                ret = [cursor.fetchone()]
             else:
-                ret = cursor.fetchall()
+                ret = list(cursor.fetchall())
         except Exception as e:
             print u"error message:{0}".format(e)
             return False
@@ -71,3 +72,6 @@ class MPMySQL(object):
             conn.close()
 
 
+if __name__ == "__main__":
+    print MPMySQL().query("SELECT now() AS time;", fetchone=True)
+    print MPMySQL().query("SELECT now() AS time;")

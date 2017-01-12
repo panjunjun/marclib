@@ -1,5 +1,6 @@
 # coding: utf-8
 # __author__: u"John"
+from __future__ import unicode_literals
 
 
 # region 属性访问定义——字典后接'.' + key名，即可得到字典中key对应的内容
