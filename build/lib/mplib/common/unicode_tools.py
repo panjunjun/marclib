@@ -4,33 +4,37 @@ from __future__ import unicode_literals
 import chardet
 
 
-def smart_decode(string):
+def smart_decode(obj):
     """
     处理中文编码，根据要求返回unicode
-    :param string:
+    :param obj:
     :return:
     """
-    if isinstance(string, int) or isinstance(string, long) or isinstance(string, float) or isinstance(string, unicode):
-        return string
-    elif isinstance(string, str):
+    if isinstance(obj, int) or isinstance(obj, long) or isinstance(obj, float) or isinstance(obj, unicode):
+        return obj
+    elif isinstance(obj, str):
         try:
-            return string.decode("utf8")
+            return obj.decode("utf8")
         except UnicodeDecodeError:
             pass
         try:
-            return string.decode("gbk")
+            return obj.decode("gbk")
         except UnicodeDecodeError:
             pass
         try:
-            return string.decode("gb2312")
+            return obj.decode("gb2312")
         except UnicodeDecodeError:
             pass
         try:
-            return string.decode(chardet.detect(string).get("encoding"))
+            return obj.decode(chardet.detect(obj).get("encoding"))
         except UnicodeDecodeError:
-            return string
+            return obj
+    elif isinstance(obj, list):
+        return [smart_decode(i) for i in obj]
+    elif isinstance(obj, dict):
+        return {smart_decode(k): smart_decode(v) for k, v in obj.iteritems()}
     else:
-        return string
+        return obj
 
 
 def smart_encode(string, charset="utf8"):
@@ -74,3 +78,17 @@ def to_unicode(string, from_charset="utf8"):
 
     else:
         return string
+
+
+if __name__ == "__main__":
+    test_objs = [
+        3,
+        3L,
+        2.5,
+        "it's a unicode",
+        ["a", b"你好", b"世界"],
+        {b"key1": b"value1", b"key2": "值2", "键3": b"value3", "key4": 5.3},
+        ("tuple[0]", b"元组", "奇怪的编码".encode("gb2312"))
+    ]
+    for test_obj in test_objs:
+        print smart_decode(test_obj)

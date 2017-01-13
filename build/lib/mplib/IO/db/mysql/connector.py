@@ -2,6 +2,7 @@
 # __author__: u"John"
 from __future__ import unicode_literals
 from mplib.common.settings import MYSQL_SETTINGS
+from mplib.common import smart_decode
 import MySQLdb
 
 
@@ -22,21 +23,15 @@ class MPMySQL(object):
 
     def query(self, sql, dict_cursor=True, fetchone=False):
         conn = MySQLdb.connect(**self.settings)
-        if dict_cursor:
-            cursor = conn.cursor(MySQLdb.cursors.DictCursor)
-        else:
-            cursor = conn.cursor()
+        cursor = conn.cursor(MySQLdb.cursors.DictCursor) if dict_cursor else conn.cursor()
         cursor.execute(sql)
         try:
-            if fetchone:
-                ret = [cursor.fetchone()]
-            else:
-                ret = list(cursor.fetchall())
+            ret = [cursor.fetchone()] if fetchone else list(cursor.fetchall())
         except Exception as e:
-            print u"error message:{0}".format(e)
+            print "error message:{0}".format(e)
             return False
         else:
-            return ret
+            return [smart_decode(r) for r in ret]
         finally:
             cursor.close()
             conn.close()
@@ -48,7 +43,7 @@ class MPMySQL(object):
             cursor.execute(sql)
             conn.commit()
         except Exception as e:
-            print u"error message:{0}".format(e)
+            print "error message:{0}".format(e)
             return False
         else:
             return True
@@ -63,7 +58,7 @@ class MPMySQL(object):
             cursor.executemany(sql, args)
             conn.commit()
         except Exception as e:
-            print u"error message:{0}".format(e)
+            print "error message:{0}".format(e)
             return False
         else:
             return True

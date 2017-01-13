@@ -7,7 +7,7 @@ from redis import Redis
 
 class MPRedis(Redis):
     def __init__(self, db=0, connection_dict=REDIS_CONNECTION):
-        Redis.__init__(self, db=db, **connection_dict)  # 自动连接redis
+        Redis.__init__(self, db=db, decode_responses=True, **connection_dict)  # 自动连接redis
         self.expiration_time = 0  # 设置过期时间，单位秒
 
     def counter(self, key, step=1, ex=1):
@@ -36,4 +36,4 @@ class MPRedis(Redis):
 if __name__ == "__main__":
     r = MPRedis()
     r.set("hello", "world")
-    print r.get("hello")
+    print [r.get("hello")]

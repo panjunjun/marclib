@@ -1,8 +1,8 @@
 # coding: utf-8
 # __author__ = "John"
 from __future__ import unicode_literals
-from mplib.common import smart_decode
 from mplib.common.settings import HIVE_CONNECTION
+from mplib.common import smart_decode
 import pyhs2
 
 

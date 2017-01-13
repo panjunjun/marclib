@@ -2,10 +2,10 @@
 # __author__: "John"
 from __future__ import unicode_literals
 from mplib.common.settings import PG_CONNECTION
+from mplib.common import smart_decode
 import psycopg2.extras
 import psycopg2.pool
 import traceback
-import psycopg2
 
 
 class DatabaseSingleton(object):
@@ -29,120 +29,66 @@ class DatabaseSingleton(object):
 
 class MPPG(DatabaseSingleton):
     def __init__(self):
+        self.conn = None
+        self.cursor = None
         self.in_transaction = False
 
     def execute(self, operation, parameters=None):
         try:
             if not self.in_transaction:
                 self.begin()
-            cursor = self.conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
-            if parameters:
-                cursor.execute(operation, parameters)
-            else:
-                cursor.execute(operation)
 
+            self.cursor.execute(operation, parameters) if parameters else self.cursor.execute(operation)
             self.commit()
-            cursor.close()
+            self.cursor.close()
 
         except:
             traceback.print_exc()
-            cursor.close()
+            self.cursor.close()
             self.rollback()
             return False
+
         else:
             return True
-
-    def execute1(self, operation, parameters=None):
-        try:
-            cursor = self.conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
-            if parameters:
-                cursor.execute(operation, parameters)
-            else:
-                cursor.execute(operation)
-        except Exception, ex:
-            print ex
-            rowcount = cursor.rowcount
-            cursor.close()
-            return rowcount
-        else:
-            rowcount = cursor.rowcount
-            cursor.close()
-            return rowcount
 
     def executemany(self, operation, parameters=None):
         try:
             if not self.in_transaction:
                 self.begin()
-            cursor = self.conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
-            if parameters:
-                cursor.executemany(operation, parameters)
-            else:
-                cursor.executemany(operation)
 
+            self.cursor.executemany(operation, parameters) if parameters else self.cursor.executemany(operation)
             self.commit()
 
-        except Exception, ex:
-            print ex
+        except:
             traceback.print_exc()
-            cursor.close()
+            self.cursor.close()
             self.rollback()
             return False
         else:
-            cursor.close()
+            self.cursor.close()
             return True
 
     def query(self, operation, parameters=None, fetchone=False):
-        conn = self.dbpool.getconn()
-        cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
-        rows = None
-
+        if not self.in_transaction:
+            self.begin()
         try:
-            if parameters:
-                cursor.execute(operation, parameters)
-            else:
-                cursor.execute(operation)
-
-            if fetchone:
-                rows = cursor.fetchone()
-            else:
-                rows = cursor.fetchall()
+            self.cursor.execute(operation, parameters) if parameters else self.cursor.execute(operation)
+            rows = [self.cursor.fetchone()] if fetchone else self.cursor.fetchall()
 
         except:
             traceback.print_exc()
-            cursor.close()
-            self.dbpool.putconn(conn, close=True)
+            self.cursor.close()
+            self.dbpool.putconn(self.conn, close=True)
             return False
         else:
-            cursor.close()
-            self.dbpool.putconn(conn)
-            return rows
-
-    def query1(self, operation, parameters=None, fetchone=False):
-        conn = self.dbpool.getconn()
-        rows = []
-        try:
-            cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
-            if parameters:
-                cursor.execute(operation, parameters)
-            else:
-                cursor.execute(operation)
-
-            if fetchone:
-                rows = cursor.fetchone()
-            else:
-                rows = cursor.fetchall()
-
-        except:
-            traceback.print_exc()
-            cursor.close()
-            return False
-        else:
-            cursor.close()
-            return rows
+            self.cursor.close()
+            self.dbpool.putconn(self.conn)
+            return [smart_decode(dict(r)) for r in rows]
 
     def begin(self):
         self.in_transaction = True
         self.conn = self.dbpool.getconn()
+        self.cursor = self.conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
 
     def commit(self):
         if self.in_transaction and self.conn:
@@ -161,8 +107,7 @@ class MPPG(DatabaseSingleton):
         if self.in_transaction and self.conn:
             try:
                 self.conn.rollback()
-            except Exception, ex:
-                print ex
+            except:
                 traceback.print_exc()
             finally:
                 self.dbpool.putconn(self.conn, close=True)
@@ -170,4 +115,5 @@ class MPPG(DatabaseSingleton):
 
 
 if __name__ == "__main__":
-    print MPPG().query("SELECT now() AS time;")
+    print MPPG().query("SELECT '你好' AS method, 'test' AS name UNION ALL SELECT '你好' AS method, 'test' AS name;", fetchone=True)
+
