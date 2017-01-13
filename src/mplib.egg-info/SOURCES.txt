@@ -32,4 +32,3 @@ src/mplib/tag/__init__.py
 src/mplib/tag/api.py
 src/mplib/tag/factory.py
 src/mplib/tag/helper.py
-src/mplib/tag/unit_test.py
