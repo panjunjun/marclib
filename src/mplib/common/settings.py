@@ -38,3 +38,9 @@ PG_CONNECTION = dict(
     maxconn=1000,
 )
 
+
+DEBUG = True
+INFO = True
+WARNING = True
+ERROR = True
+FATAL = True
