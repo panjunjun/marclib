@@ -33,6 +33,8 @@ def smart_decode(obj):
         return [smart_decode(i) for i in obj]
     elif isinstance(obj, dict):
         return {smart_decode(k): smart_decode(v) for k, v in obj.iteritems()}
+    elif isinstance(obj, tuple):
+        return tuple([smart_decode(i) for i in obj])
     else:
         return obj
 
@@ -66,19 +68,27 @@ def change_charset(string, from_charset="utf8", to_charset="utf8"):
         return string
 
 
-def to_unicode(string, from_charset="utf8"):
-    if isinstance(string, unicode):
-        return string
+def to_unicode(obj):
+    if isinstance(obj, unicode):
+        return obj
 
-    elif isinstance(string, str):
-        return string.decode(from_charset)
+    elif isinstance(obj, str):
+        return smart_decode(obj)
 
-    elif isinstance(string, int):
-        return unicode(string)
+    elif isinstance(obj, int):
+        return unicode(obj)
+
+    elif isinstance(obj, list):
+        return [to_unicode(i) for i in obj]
+
+    elif isinstance(obj, dict):
+        return {to_unicode(k): to_unicode(v) for k, v in obj.iteritems()}
+
+    elif isinstance(obj, tuple):
+        return tuple([to_unicode(i) for i in obj])
 
     else:
-        return string
-
+        return obj
 
 if __name__ == "__main__":
     test_objs = [
