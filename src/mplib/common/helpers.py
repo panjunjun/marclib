@@ -28,6 +28,7 @@ def print_line(placeholder="-", repeat=50, center_word=""):
     else:
         return
 
+    repeat = repeat if repeat <= 80 else 80
     center_word = " {0} ".format(to_unicode(center_word)) if center_word else center_word
     print "{0}{1}{0}".format(to_unicode(placeholder) * repeat, center_word)
 
@@ -37,3 +38,6 @@ if __name__ == "__main__":
     print_line("a")
     print_line("b", "30")
     print_line("b", "30", "hello")
+    print_line("b", "a", "hello")
+    print_line("_", 100, "你好")
+    print_line(["_", "-"], 1, dict(hello="world"))
