@@ -53,4 +53,4 @@ class Hive:
 
 
 if __name__ == "__main__":
-    print Hive().query("SELECT * FROM dimdate LIMIT 1;")
+    print Hive().query("SHOW TABLES")

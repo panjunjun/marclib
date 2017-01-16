@@ -13,10 +13,10 @@ MYSQL_SETTINGS = dict(
 
 
 HIVE_CONNECTION = dict(
-    database="elengjing",
-    host="192.168.110.122",
-    user="hive",
-    password="hive1",
+    database="das",
+    host="172.16.1.11",
+    user="big boss",
+    password="it's secret",
     port=10000,
     authMechanism="PLAIN"
 )
