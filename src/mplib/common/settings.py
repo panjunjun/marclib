@@ -39,6 +39,13 @@ PG_CONNECTION = dict(
 )
 
 
+IMPALA_CONNECTION = dict(
+    host="172.16.1.14",
+    port=21050,
+    database="das",
+)
+
+
 DEBUG = True
 INFO = True
 WARNING = True
